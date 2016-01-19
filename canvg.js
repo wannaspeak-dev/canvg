@@ -261,7 +261,7 @@
 				if (!this.hasValue()) return 0;
 
 				var n = parseFloat(this.value);
-				if ((this.value + '').match(/%$/)) {
+				if ((this.value + '').match(/%$/)) { 
 					n = n / 100.0;
 				}
 				return n;
@@ -282,10 +282,18 @@
 				svg.Property.prototype.addOpacity = function(opacityProp) {
 					var newValue = this.value;
 					if (opacityProp.value != null && opacityProp.value != '' && typeof(this.value)=='string') { // can only add opacity to colors, not patterns
-						var color = new RGBColor(this.value);
+                                            try {
+						var color = RGBColor(this.value);
 						if (color.ok) {
-							newValue = 'rgba(' + color.r + ', ' + color.g + ', ' + color.b + ', ' + opacityProp.numValue() + ')';
+							newValue = 'rgba(' + color.r + ', ' + color.g + ', ' + color.b + ', ' + opacityProp + ')';
 						}
+                                            } catch(e) {
+                                                /*
+                                                 * Set Default when RGBColor get errors ex: Illegal constructor.
+                                                 */
+                                                console.log('Init RGBColor get an error', e);
+                                                newValue = 'rgba(' + 50 + ', ' + 50 + ', ' +50 + ', ' + opacityProp + ')';
+                                            }
 					}
 					return new svg.Property(this.name, newValue);
 				}
